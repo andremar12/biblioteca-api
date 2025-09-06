@@ -1,0 +1,96 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: andremar
+      changes:
+        - createTable:
+            tableName: genero
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: nome
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: descricao
+                  type: VARCHAR(255)
+              - column:
+                  name: ativo
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - addDefaultValue:
+            tableName: genero
+            columnName: ativo
+            defaultValueBoolean: true
+
+  - changeSet:
+      id: 2
+      author: andremar
+      changes:
+        - createTable:
+            tableName: autor
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: nome
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nacionalidade
+                  type: VARCHAR(200)
+              - column:
+                  name: data_nascimento
+                  type: DATE
+              - column:
+                  name: biografia
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: 3
+      author: andremar
+      changes:
+        - createTable:
+            tableName: livro
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: titulo
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: descricao
+                  type: VARCHAR(500)
+              - column:
+                  name: autor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_livro_autor
+                    references: autor(id)
+              - column:
+                  name: genero_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_livro_genero
+                    references: genero(id)
