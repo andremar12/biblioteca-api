@@ -4,6 +4,8 @@ import com.andremarAjaxTest.biblioteca.dto.request.LivroRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.LivroResponse;
 import com.andremarAjaxTest.biblioteca.service.LivroService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,15 @@ public class LivroController {
     public LivroController(LivroService livroService) {
         this.livroService = livroService;
     }
-
     @GetMapping
+    public ResponseEntity<Page<LivroResponse>> getAllPageable(
+            @RequestParam(required = false) String nome,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(livroService.findAllPageable(nome, pageable));
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<List<LivroResponse>> getAll() {
         return ResponseEntity.ok(livroService.findAll());
     }

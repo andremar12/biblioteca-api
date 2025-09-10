@@ -3,9 +3,12 @@ package com.andremarAjaxTest.biblioteca.service.impl;
 import com.andremarAjaxTest.biblioteca.dto.request.GeneroRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.GeneroResponse;
 import com.andremarAjaxTest.biblioteca.entity.Genero;
+import com.andremarAjaxTest.biblioteca.mapper.GeneroMapper;
 import com.andremarAjaxTest.biblioteca.repository.GeneroRepository;
 import com.andremarAjaxTest.biblioteca.service.GeneroService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +27,16 @@ public class GeneroServiceImpl implements GeneroService {
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    public Page<GeneroResponse> findAllPageable(String nome, Pageable pageable) {
+        Page<Genero> page;
+        if (nome != null && !nome.isBlank()) {
+            page = generoRepository.findByNomeContainingIgnoreCase(nome, pageable);
+        } else {
+            page = generoRepository.findAll(pageable);
+        }
+        return page.map(GeneroMapper::toResponse);
     }
 
     @Override

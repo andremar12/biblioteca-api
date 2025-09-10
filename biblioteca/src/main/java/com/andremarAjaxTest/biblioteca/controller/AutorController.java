@@ -4,6 +4,8 @@ import com.andremarAjaxTest.biblioteca.dto.request.AutorRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.AutorResponse;
 import com.andremarAjaxTest.biblioteca.service.AutorService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +21,19 @@ public class AutorController {
         this.autorService = autorService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<AutorResponse>> getAll() {
         return ResponseEntity.ok(autorService.findAll());
     }
+
+    @GetMapping
+    public ResponseEntity<Page<AutorResponse>> getAllPageable(
+            @RequestParam(required = false) String nome,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(autorService.findAllPageable(nome, pageable));
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<AutorResponse> getById(@PathVariable Long id) {

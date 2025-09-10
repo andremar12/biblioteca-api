@@ -7,11 +7,14 @@ import com.andremarAjaxTest.biblioteca.dto.response.LivroResponse;
 import com.andremarAjaxTest.biblioteca.entity.Autor;
 import com.andremarAjaxTest.biblioteca.entity.Genero;
 import com.andremarAjaxTest.biblioteca.entity.Livro;
+import com.andremarAjaxTest.biblioteca.mapper.LivroMapper;
 import com.andremarAjaxTest.biblioteca.repository.AutorRepository;
 import com.andremarAjaxTest.biblioteca.repository.GeneroRepository;
 import com.andremarAjaxTest.biblioteca.repository.LivroRepository;
 import com.andremarAjaxTest.biblioteca.service.LivroService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,7 +37,15 @@ public class LivroServiceImpl implements LivroService {
                 .map(this::toResponse)
                 .toList();
     }
-
+    public Page<LivroResponse> findAllPageable(String titulo, Pageable pageable) {
+        Page<Livro> page;
+        if (titulo != null && !titulo.isBlank()) {
+            page = livroRepository.findByTituloContainingIgnoreCase(titulo, pageable);
+        } else {
+            page = livroRepository.findAll(pageable);
+        }
+        return page.map(LivroMapper::toResponse);
+    }
     @Override
     public Optional<LivroResponse> findById(Long id) {
         return livroRepository.findById(id).map(this::toResponse);

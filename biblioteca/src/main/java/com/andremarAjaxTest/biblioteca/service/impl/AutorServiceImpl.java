@@ -2,9 +2,12 @@ package com.andremarAjaxTest.biblioteca.service.impl;
 import com.andremarAjaxTest.biblioteca.dto.request.AutorRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.AutorResponse;
 import com.andremarAjaxTest.biblioteca.entity.Autor;
+import com.andremarAjaxTest.biblioteca.mapper.AutorMapper;
 import com.andremarAjaxTest.biblioteca.repository.AutorRepository;
 import com.andremarAjaxTest.biblioteca.service.AutorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +27,16 @@ public class AutorServiceImpl implements AutorService {
                 .stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    public Page<AutorResponse> findAllPageable(String nome, Pageable pageable) {
+        Page<Autor> page;
+        if (nome != null && !nome.isBlank()) {
+            page = autorRepository.findByNomeContainingIgnoreCase(nome, pageable);
+        } else {
+            page = autorRepository.findAll(pageable);
+        }
+        return page.map(AutorMapper::toResponse);
     }
 
     @Override
