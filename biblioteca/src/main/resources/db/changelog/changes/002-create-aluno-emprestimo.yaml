@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: andremar
+      changes:
+        - createTable:
+            tableName: aluno
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: nome
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: matricula
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  - changeSet:
+      id: 2
+      author: andremar
+      changes:
+        - createTable:
+            tableName: emprestimo
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: aluno_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_emprestimo_aluno
+                    references: aluno(id)
+              - column:
+                  name: livro_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_emprestimo_livro
+                    references: livro(id)
+              - column:
+                  name: data_emprestimo
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data_devolucao
+                  type: DATE
+              - column:
+                  name: devolvido
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+        - addDefaultValue:
+            tableName: emprestimo
+            columnName: devolvido
+            defaultValueBoolean: false

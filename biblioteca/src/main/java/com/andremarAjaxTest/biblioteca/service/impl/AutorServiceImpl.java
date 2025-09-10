@@ -1,4 +1,5 @@
 package com.andremarAjaxTest.biblioteca.service.impl;
+
 import com.andremarAjaxTest.biblioteca.dto.request.AutorRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.AutorResponse;
 import com.andremarAjaxTest.biblioteca.entity.Autor;
@@ -25,7 +26,7 @@ public class AutorServiceImpl implements AutorService {
     public List<AutorResponse> findAll() {
         return autorRepository.findAll()
                 .stream()
-                .map(this::toResponse)
+                .map(AutorMapper::toResponse)
                 .toList();
     }
 
@@ -41,13 +42,13 @@ public class AutorServiceImpl implements AutorService {
 
     @Override
     public Optional<AutorResponse> findById(Long id) {
-        return autorRepository.findById(id).map(this::toResponse);
+        return autorRepository.findById(id).map(AutorMapper::toResponse);
     }
 
     @Override
     public AutorResponse create(AutorRequest request) {
-        Autor autor = toEntity(request);
-        return toResponse(autorRepository.save(autor));
+        Autor autor = AutorMapper.toEntity(request);
+        return AutorMapper.toResponse(autorRepository.save(autor));
     }
 
     @Override
@@ -56,11 +57,13 @@ public class AutorServiceImpl implements AutorService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Autor não encontrado."
                 ));
+
         autor.setNome(request.nome());
         autor.setNacionalidade(request.nacionalidade());
         autor.setDataNascimento(request.dataNascimento());
         autor.setBiografia(request.biografia());
-        return toResponse(autorRepository.save(autor));
+
+        return AutorMapper.toResponse(autorRepository.save(autor));
     }
 
     @Override
@@ -71,24 +74,5 @@ public class AutorServiceImpl implements AutorService {
             );
         }
         autorRepository.deleteById(id);
-    }
-
-    private AutorResponse toResponse(Autor autor) {
-        return new AutorResponse(
-                autor.getId(),
-                autor.getNome(),
-                autor.getNacionalidade(),
-                autor.getDataNascimento(),
-                autor.getBiografia()
-        );
-    }
-
-    private Autor toEntity(AutorRequest request) {
-        return Autor.builder()
-                .nome(request.nome())
-                .nacionalidade(request.nacionalidade())
-                .dataNascimento(request.dataNascimento())
-                .biografia(request.biografia())
-                .build();
     }
 }

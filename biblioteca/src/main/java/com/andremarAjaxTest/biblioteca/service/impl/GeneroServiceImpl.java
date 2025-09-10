@@ -25,7 +25,7 @@ public class GeneroServiceImpl implements GeneroService {
     public List<GeneroResponse> findAll() {
         return generoRepository.findAll()
                 .stream()
-                .map(this::toResponse)
+                .map(GeneroMapper::toResponse)
                 .toList();
     }
 
@@ -41,7 +41,7 @@ public class GeneroServiceImpl implements GeneroService {
 
     @Override
     public Optional<GeneroResponse> findById(Long id) {
-        return generoRepository.findById(id).map(this::toResponse);
+        return generoRepository.findById(id).map(GeneroMapper::toResponse);
     }
 
     @Override
@@ -51,8 +51,8 @@ public class GeneroServiceImpl implements GeneroService {
                     HttpStatus.CONFLICT, "Já existe um gênero com esse nome."
             );
         }
-        Genero genero = toEntity(request);
-        return toResponse(generoRepository.save(genero));
+        Genero genero = GeneroMapper.toEntity(request);
+        return GeneroMapper.toResponse(generoRepository.save(genero));
     }
 
     @Override
@@ -64,7 +64,8 @@ public class GeneroServiceImpl implements GeneroService {
         genero.setNome(request.nome());
         genero.setDescricao(request.descricao());
         genero.setAtivo(request.ativo() != null ? request.ativo() : true);
-        return toResponse(generoRepository.save(genero));
+
+        return GeneroMapper.toResponse(generoRepository.save(genero));
     }
 
     @Override
@@ -75,22 +76,5 @@ public class GeneroServiceImpl implements GeneroService {
             );
         }
         generoRepository.deleteById(id);
-    }
-
-    private GeneroResponse toResponse(Genero genero) {
-        return new GeneroResponse(
-                genero.getId(),
-                genero.getNome(),
-                genero.getDescricao(),
-                genero.getAtivo()
-        );
-    }
-
-    private Genero toEntity(GeneroRequest request) {
-        return Genero.builder()
-                .nome(request.nome())
-                .descricao(request.descricao())
-                .ativo(request.ativo() != null ? request.ativo() : true)
-                .build();
     }
 }
