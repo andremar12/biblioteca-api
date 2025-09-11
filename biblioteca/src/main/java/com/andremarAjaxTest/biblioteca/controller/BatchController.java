@@ -1,40 +1,45 @@
 package com.andremarAjaxTest.biblioteca.controller;
 
+import com.andremarAjaxTest.biblioteca.service.impl.EmprestimoServiceImpl;
+import com.andremarAjaxTest.biblioteca.service.impl.RelatorioImprestimoImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @RestController
-@RequestMapping("/api/batch")
+@RequestMapping("/api/v1/batch")
 @RequiredArgsConstructor
 public class BatchController {
 
-    private final JobLauncher jobLauncher;
-    private final Job gerarRelatorioEmprestimosJob;
+
+    private final RelatorioImprestimoImpl relatorioImprestimo;
 
     @PostMapping("/relatorio-emprestimos")
-    public ResponseEntity<String> executarRelatorioEmprestimos() {
+    public ResponseEntity<ByteArrayResource> baixarRelatorioEmprestimos() {
         try {
-            JobParameters params = new JobParametersBuilder()
-                    .addLong("timestamp", System.currentTimeMillis())
-                    .toJobParameters();
-
-            jobLauncher.run(gerarRelatorioEmprestimosJob, params);
-
-            return ResponseEntity
-                    .ok()
-                    .header("X-Message", "Job de relatório de empréstimos iniciado com sucesso!")
-                    .body("Job de relatório de empréstimos iniciado com sucesso!");
+            ByteArrayResource resource = relatorioImprestimo.gerarRelatorioEmprestimos();
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=relatorio_emprestimos.xlsx")
+                    .contentType(MediaType.parseMediaType(
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(resource);
         } catch (Exception e) {
-            return ResponseEntity
-                    .status(500)
-                    .header("X-Message", "Erro ao iniciar o job: " + e.getMessage())
-                    .body("Erro ao iniciar o job: " + e.getMessage());
+            return ResponseEntity.status(500).build();
         }
     }
 }
-

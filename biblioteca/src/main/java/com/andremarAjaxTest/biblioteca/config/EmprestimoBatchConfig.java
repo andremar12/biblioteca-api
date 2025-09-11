@@ -96,8 +96,8 @@ public class EmprestimoBatchConfig {
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("Empréstimos");
 
-            Row header = sheet.createRow(0);
             String[] colunas = {"Aluno", "Matrícula", "Livro", "Data Empréstimo", "Data Prevista", "Data Devolução", "Status"};
+            Row header = sheet.createRow(0);
             for (int i = 0; i < colunas.length; i++) {
                 header.createCell(i).setCellValue(colunas[i]);
             }
@@ -109,12 +109,16 @@ public class EmprestimoBatchConfig {
                     row.createCell(i).setCellValue(item.get(i));
                 }
             }
-            try (FileOutputStream fos = new FileOutputStream("relatorio_emprestimos.xlsx")) {
+
+            // Gera nome do arquivo com data atual
+            String nomeArquivo = "relatorio_emprestimos_" + java.time.LocalDate.now() + ".xlsx";
+
+            try (FileOutputStream fos = new FileOutputStream(nomeArquivo)) {
                 workbook.write(fos);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         };
+
     }
 }
