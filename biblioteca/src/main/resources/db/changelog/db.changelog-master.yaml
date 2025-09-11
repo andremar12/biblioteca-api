@@ -4,4 +4,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/002-create-aluno-emprestimo.yaml
   - include:
+      file: db/changelog/changes/003-add-colum-emprestimo.yaml
+  - include:
       file: db/changelog/changes/springbatch-create.yaml
