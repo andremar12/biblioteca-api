@@ -7,6 +7,7 @@ import com.andremarAjaxTest.biblioteca.entity.Genero;
 import com.andremarAjaxTest.biblioteca.entity.Livro;
 import com.andremarAjaxTest.biblioteca.mapper.LivroMapper;
 import com.andremarAjaxTest.biblioteca.repository.AutorRepository;
+import com.andremarAjaxTest.biblioteca.repository.EmprestimoRepository;
 import com.andremarAjaxTest.biblioteca.repository.GeneroRepository;
 import com.andremarAjaxTest.biblioteca.repository.LivroRepository;
 import com.andremarAjaxTest.biblioteca.service.LivroService;
@@ -27,6 +28,7 @@ public class LivroServiceImpl implements LivroService {
     private final LivroRepository livroRepository;
     private final AutorRepository autorRepository;
     private final GeneroRepository generoRepository;
+    private final EmprestimoRepository emprestimoRepository;
 
     @Override
     public List<LivroResponse> findAll() {
@@ -36,13 +38,9 @@ public class LivroServiceImpl implements LivroService {
                 .toList();
     }
 
-    public Page<LivroResponse> findAllPageable(String titulo, Pageable pageable) {
-        Page<Livro> page;
-        if (titulo != null && !titulo.isBlank()) {
-            page = livroRepository.findByTituloContainingIgnoreCase(titulo, pageable);
-        } else {
-            page = livroRepository.findAll(pageable);
-        }
+    public Page<LivroResponse> findAllPageable(String titulo, Long autorId, Pageable pageable) {
+        String filtroTitulo = titulo != null ? titulo : "";
+        Page<Livro> page = livroRepository.findByTituloAndAutorId(filtroTitulo, autorId, pageable);
         return page.map(LivroMapper::toResponse);
     }
 
@@ -99,6 +97,12 @@ public class LivroServiceImpl implements LivroService {
         if (!livroRepository.existsById(id)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Livro não encontrado."
+            );
+        }
+        boolean existsBy = emprestimoRepository.existsByLivroId(id);
+        if(existsBy){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_ACCEPTABLE, "Livro vinculado a emprestimo"
             );
         }
         livroRepository.deleteById(id);

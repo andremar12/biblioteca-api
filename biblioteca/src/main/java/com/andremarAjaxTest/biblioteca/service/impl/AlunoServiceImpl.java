@@ -2,9 +2,12 @@ package com.andremarAjaxTest.biblioteca.service.impl;
 
 import com.andremarAjaxTest.biblioteca.dto.request.AlunoRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.AlunoResponse;
+import com.andremarAjaxTest.biblioteca.dto.response.AutorResponse;
 import com.andremarAjaxTest.biblioteca.dto.response.GeneroResponse;
 import com.andremarAjaxTest.biblioteca.entity.Aluno;
+import com.andremarAjaxTest.biblioteca.entity.Autor;
 import com.andremarAjaxTest.biblioteca.mapper.AlunoMapper;
+import com.andremarAjaxTest.biblioteca.mapper.AutorMapper;
 import com.andremarAjaxTest.biblioteca.repository.AlunoRepository;
 import com.andremarAjaxTest.biblioteca.service.AlunoService;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +30,16 @@ public class AlunoServiceImpl implements AlunoService {
                 .stream()
                 .map(AlunoMapper::toResponse)
                 .toList();
+    }
+
+    public Page<AlunoResponse> findAllPageable(String nome, Pageable pageable) {
+        Page<Aluno> page;
+        if (nome != null && !nome.isBlank()) {
+            page = alunoRepository.findByNomeContainingIgnoreCase(nome, pageable);
+        } else {
+            page = alunoRepository.findAll(pageable);
+        }
+        return page.map(AlunoMapper::toResponse);
     }
     @Override
     public AlunoResponse create(AlunoRequest request) {

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface LivroService {
     List<LivroResponse> findAll();
-    Page<LivroResponse> findAllPageable(String nome, Pageable pageable);
+    Page<LivroResponse> findAllPageable(String nome,Long autorId, Pageable pageable);
     Optional<LivroResponse> findById(Long id);
     LivroResponse create(LivroRequest request);
     LivroResponse update(Long id, LivroRequest request);

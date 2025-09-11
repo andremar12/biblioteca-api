@@ -5,6 +5,7 @@ import com.andremarAjaxTest.biblioteca.dto.response.AutorResponse;
 import com.andremarAjaxTest.biblioteca.entity.Autor;
 import com.andremarAjaxTest.biblioteca.mapper.AutorMapper;
 import com.andremarAjaxTest.biblioteca.repository.AutorRepository;
+import com.andremarAjaxTest.biblioteca.repository.LivroRepository;
 import com.andremarAjaxTest.biblioteca.service.AutorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class AutorServiceImpl implements AutorService {
 
     private final AutorRepository autorRepository;
-
+    private  final LivroRepository livroRepository;
     @Override
     public List<AutorResponse> findAll() {
         return autorRepository.findAll()
@@ -71,6 +72,12 @@ public class AutorServiceImpl implements AutorService {
         if (!autorRepository.existsById(id)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Autor não encontrado."
+            );
+        }
+        boolean existsBy = livroRepository.existsByAutorId(id);
+        if(existsBy){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_ACCEPTABLE, "Autor vinculado a livro"
             );
         }
         autorRepository.deleteById(id);

@@ -5,6 +5,7 @@ import com.andremarAjaxTest.biblioteca.dto.response.EmprestimoResponse;
 import com.andremarAjaxTest.biblioteca.entity.Aluno;
 import com.andremarAjaxTest.biblioteca.entity.Emprestimo;
 import com.andremarAjaxTest.biblioteca.entity.Livro;
+import com.andremarAjaxTest.biblioteca.enums.StatusEmprestimo;
 
 public class EmprestimoMapper {
 
@@ -17,8 +18,10 @@ public class EmprestimoMapper {
                 emprestimo.getLivro() != null ? emprestimo.getLivro().getId() : null,
                 emprestimo.getLivro() != null ? emprestimo.getLivro().getTitulo() : null,
                 emprestimo.getDataEmprestimo(),
+                emprestimo.getDataPrevistaDevolucao(),
                 emprestimo.getDataDevolucao(),
-                emprestimo.getDevolvido()
+                emprestimo.getDevolvido(),
+                emprestimo.getStatus()
         );
     }
 
@@ -30,7 +33,9 @@ public class EmprestimoMapper {
                 livro,
                 request.dataEmprestimo(),
                 request.dataDevolucao(),
-                request.devolvido() != null ? request.devolvido() : false
+                request.devolvido() != null ? request.devolvido() : false,
+                request.dataPrevistaDevolucao(),
+                request.status() != null ? request.status() : StatusEmprestimo.EM_DIA
         );
     }
 }

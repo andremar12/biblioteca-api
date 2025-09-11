@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: andremar
+      changes:
+        - addColumn:
+            tableName: emprestimo
+            columns:
+              - column:
+                  name: data_prevista_devolucao
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+        - addDefaultValue:
+            tableName: emprestimo
+            columnName: status
+            defaultValue: 'EM DIA'

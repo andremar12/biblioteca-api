@@ -1,5 +1,6 @@
 package com.andremarAjaxTest.biblioteca.entity;
 
+import com.andremarAjaxTest.biblioteca.enums.StatusEmprestimo;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,4 +34,11 @@ public class Emprestimo {
 
     @Column(nullable = false)
     private Boolean devolvido;
+
+    @Column(name = "data_prevista_devolucao", nullable = false)
+    private LocalDate dataPrevistaDevolucao;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusEmprestimo status;
 }

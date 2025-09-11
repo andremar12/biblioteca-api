@@ -19,12 +19,18 @@ public class EmprestimoController {
 
     @GetMapping
     public ResponseEntity<List<EmprestimoResponse>> getAll() {
-        return ResponseEntity.ok(emprestimoService.getAll());
+        return ResponseEntity
+                .ok()
+                .header("X-Message", "Lista de empréstimos carregada com sucesso!")
+                .body(emprestimoService.getAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EmprestimoResponse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(emprestimoService.getById(id));
+        return ResponseEntity
+                .ok()
+                .header("X-Message", "Empréstimo encontrado com sucesso!")
+                .body(emprestimoService.getById(id));
     }
 
     @PostMapping
@@ -32,6 +38,7 @@ public class EmprestimoController {
         EmprestimoResponse emprestimo = emprestimoService.create(request);
         return ResponseEntity
                 .created(URI.create("/api/v1/emprestimos/" + emprestimo.id()))
+                .header("X-Message", "Empréstimo criado com sucesso!")
                 .body(emprestimo);
     }
 
@@ -40,12 +47,19 @@ public class EmprestimoController {
             @PathVariable Long id,
             @RequestBody EmprestimoRequest request
     ) {
-        return ResponseEntity.ok(emprestimoService.update(id, request));
+        EmprestimoResponse emprestimo = emprestimoService.update(id, request);
+        return ResponseEntity
+                .ok()
+                .header("X-Message", "Empréstimo atualizado com sucesso!")
+                .body(emprestimo);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         emprestimoService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .header("X-Message", "Empréstimo excluído com sucesso!")
+                .build();
     }
 }

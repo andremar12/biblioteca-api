@@ -2,9 +2,12 @@ package com.andremarAjaxTest.biblioteca.service.impl;
 
 import com.andremarAjaxTest.biblioteca.dto.request.GeneroRequest;
 import com.andremarAjaxTest.biblioteca.dto.response.GeneroResponse;
+import com.andremarAjaxTest.biblioteca.dto.response.LivroResponse;
 import com.andremarAjaxTest.biblioteca.entity.Genero;
+import com.andremarAjaxTest.biblioteca.entity.Livro;
 import com.andremarAjaxTest.biblioteca.mapper.GeneroMapper;
 import com.andremarAjaxTest.biblioteca.repository.GeneroRepository;
+import com.andremarAjaxTest.biblioteca.repository.LivroRepository;
 import com.andremarAjaxTest.biblioteca.service.GeneroService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GeneroServiceImpl implements GeneroService {
     private final GeneroRepository generoRepository;
-
+    private final LivroRepository livroRepository;
     @Override
     public List<GeneroResponse> findAll() {
         return generoRepository.findAll()
@@ -73,6 +76,12 @@ public class GeneroServiceImpl implements GeneroService {
         if (!generoRepository.existsById(id)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Gênero não encontrado."
+            );
+        }
+        boolean existsBy = livroRepository.existsByGeneroId(id);
+        if(existsBy){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_ACCEPTABLE, "Gênero com livros vinculado"
             );
         }
         generoRepository.deleteById(id);
