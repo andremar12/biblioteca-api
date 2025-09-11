@@ -2,7 +2,7 @@ Biblioteca - Sistema de Gerenciamento
 
 Sistema de gerenciamento de gêneros, autores e livros, com relatórios de empréstimos. Desenvolvido em Spring Boot, JPA e PostgreSQL.
 
-Pré-requisitos
+--------Pré-requisitos--------------
 
 Java 21 ou superior
 
@@ -12,7 +12,7 @@ PostgreSQL
 
 IDE de sua preferência (opcional)
 
-Configuração do Banco de Dados
+------Configuração do Banco de Dados--------
 
 Crie um banco de dados no PostgreSQL (exemplo: biblioteca).
 
@@ -25,7 +25,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/biblioteca
     username: seu_usuario
     password: sua_senha
-
+----------------------------------------------
 para rodar mvn clean spring-boot:run 
 
 ou configure um perfil na sua ide
